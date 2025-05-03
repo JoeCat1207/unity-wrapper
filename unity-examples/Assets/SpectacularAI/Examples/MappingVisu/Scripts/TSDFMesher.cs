@@ -105,6 +105,57 @@ namespace SpectacularAI.Examples.MappingVisu
             }
             return mesh;
         }
+        
+        /// <summary>
+        /// Creates a mesh from the entire SLAM map by integrating all keyframe point clouds.
+        /// </summary>
+        public static Mesh CreateMeshFromMap(Map map, int resolution = 32, float truncationScale = 2.5f, int smoothingIterations = 2, float smoothingLambda = 0.5f)
+        {
+            if (map == null || map.KeyFrames.Count == 0)
+            {
+                return new Mesh();
+            }
+            // Compute global bounding box from all keyframe point clouds
+            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            foreach (var kf in map.KeyFrames.Values)
+            {
+                var pc = kf.PointCloud;
+                if (pc == null || pc.Empty) continue;
+                foreach (var p in pc.Positions)
+                {
+                    min = Vector3.Min(min, p);
+                    max = Vector3.Max(max, p);
+                }
+            }
+            // No valid points
+            if (min.x > max.x)
+            {
+                return new Mesh();
+            }
+            Vector3 size = max - min;
+            float maxSize = Mathf.Max(size.x, size.y, size.z);
+            float truncationDistance = truncationScale * (maxSize / (resolution - 1));
+            float expandedHalfSize = maxSize * 0.5f + truncationDistance;
+            Vector3 center = (min + max) * 0.5f;
+            Vector3 boundsMin = center - Vector3.one * expandedHalfSize;
+            Vector3 boundsMax = center + Vector3.one * expandedHalfSize;
+            var volume = new TSDFVolume(boundsMin, boundsMax, resolution, truncationDistance);
+            // Integrate each keyframe point cloud
+            foreach (var kf in map.KeyFrames.Values)
+            {
+                var pc = kf.PointCloud;
+                if (pc == null || pc.Empty) continue;
+                volume.Integrate(pc);
+            }
+            // Extract mesh and apply smoothing
+            var mapMesh = volume.ExtractMesh();
+            if (smoothingIterations > 0)
+            {
+                SmoothMesh(mapMesh, smoothingIterations, smoothingLambda);
+            }
+            return mapMesh;
+        }
 
         class TSDFVolume
         {

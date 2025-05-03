@@ -8,11 +8,20 @@ namespace SpectacularAI.Examples.MappingVisu
         private UnityEngine.Material _pointCloudMaterial;
         private UnityEngine.GameObject _map;
         private Dictionary<long, UnityEngine.GameObject> _keyFrames = new Dictionary<long, UnityEngine.GameObject>();
+        // GameObject and MeshFilter for displaying the TSDF mesh of the map
+        private UnityEngine.GameObject _tsdfMeshObject;
+        private UnityEngine.MeshFilter _tsdfMeshFilter;
 
         public MapRenderer(UnityEngine.Material pointCloudMaterial)
         {
             _pointCloudMaterial = pointCloudMaterial;
             _map = new UnityEngine.GameObject("SLAM Map");
+            // Initialize TSDF mesh object
+            _tsdfMeshObject = new UnityEngine.GameObject("TSDFMesh");
+            _tsdfMeshObject.transform.parent = _map.transform;
+            _tsdfMeshFilter = _tsdfMeshObject.AddComponent<UnityEngine.MeshFilter>();
+            var meshRenderer = _tsdfMeshObject.AddComponent<UnityEngine.MeshRenderer>();
+            meshRenderer.sharedMaterial = _pointCloudMaterial;
         }
 
         ~MapRenderer()
@@ -74,6 +83,10 @@ namespace SpectacularAI.Examples.MappingVisu
                     RemoveKeyFrame(kfId);
                 }
             }
+            }
+            // Generate and display TSDF mesh for the entire map
+            var mapMesh = TSDFMesher.CreateMeshFromMap(map);
+            _tsdfMeshFilter.mesh = mapMesh;
         }
     }
 }
