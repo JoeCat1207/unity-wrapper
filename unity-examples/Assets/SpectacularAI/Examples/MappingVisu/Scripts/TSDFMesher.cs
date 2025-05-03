@@ -43,7 +43,7 @@ namespace SpectacularAI.Examples.MappingVisu
         };
 
         // Triangle table maps cubeIndex to up to 5 triangles (15 vertex indices) + -1 terminator
-        static readonly int[,] triTable = new int[256, 16]
+        static readonly int[,] triTable = new int[,]
         {
             {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
             {0,8,3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},

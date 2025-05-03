@@ -40,7 +40,7 @@ namespace SpectacularAI.Examples.MappingVisu
 
         private void SetupPoseProvider()
         {
-            var cam = Camera.main;
+            var cam = UnityEngine.Camera.main;
             if (cam == null)
             {
                 Debug.LogWarning("SteamVRIntegration: No Main Camera found to attach PoseProvider.");
