@@ -83,7 +83,6 @@ namespace SpectacularAI.Examples.MappingVisu
                     RemoveKeyFrame(kfId);
                 }
             }
-            }
             // Generate and display TSDF mesh for the entire map
             var mapMesh = TSDFMesher.CreateMeshFromMap(map);
             _tsdfMeshFilter.mesh = mapMesh;
