@@ -1,5 +1,11 @@
 # Spectacular AI Unity integration example
 
+This is a modified version of Spectacular AI's Unity Integration example that includes:
+    -TSDF & Voxelizaion 3D mesh generation in the MappingVISU example scene
+    -SteamVR runtime integration
+
+This is a side-project in anticipation for Project Kairos, a passthrough based AR headset.
+
 Spectacular AI SDK fuses data from cameras and IMU sensors (accelerometer and gyroscope) and outputs an accurate 6-degree-of-freedom pose of a device. The SDK also includes a Mapping API that can be used to access the full SLAM map for both real-time and offline 3D reconstruction use cases.
 
 This repository contains example Unity integration for the Spectacular AI DepthAI C++ Plugin, enabling real-time tracking and reconstruction with OAK-D devices straight in Unity.
